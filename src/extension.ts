@@ -39,11 +39,10 @@ Please do the following: ${userPrompt}`;
       outputChannel.appendLine(`Prompted with: \n\n${ollamaPrompt}\n`);
 
       try {
-        const version = "14B";
         const response = await axios.post(
           "http://localhost:11434/api/generate",
           {
-            model: "deepseek-r1:" + version,
+            model: "deepseek-r1",
             prompt: ollamaPrompt,
             stream: false,
           }
