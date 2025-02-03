@@ -15,12 +15,8 @@ export function activate(context: vscode.ExtensionContext) {
 
     const userPrompt = await vscode.window.showInputBox({
       prompt: 'Enter your prompt for Deepseek:',
-      placeHolder: 'e.g., Help me fix this code'
-    });
-
-    if (!userPrompt) {
-      return;
-    }
+      placeHolder: 'Explain'
+    }) ?? 'Explain this file';
 
     const ollamaPrompt = `I am editing the file ${fileName}, which has content:
 
@@ -31,7 +27,9 @@ ${fileContent}
 Please do the following: ${userPrompt}`;
 
     const outputChannel = vscode.window.createOutputChannel('Deepseek Response');
+    outputChannel.clear();
     outputChannel.show(true);
+    outputChannel.appendLine(`Prompted with: \n\n${ollamaPrompt}\n`);
 
     try {
       const response = await axios.post('http://localhost:11434/api/generate', {
@@ -40,10 +38,8 @@ Please do the following: ${userPrompt}`;
         stream: false
       });
 
-      outputChannel.clear();
       outputChannel.appendLine(response.data.response);
     } catch (error) {
-      outputChannel.clear();
       outputChannel.appendLine('Error occurred:');
       if (axios.isAxiosError(error)) {
         outputChannel.appendLine(error.response?.data?.error || error.message);
