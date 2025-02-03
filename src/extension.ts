@@ -34,15 +34,16 @@ Please do the following: ${userPrompt}`;
 
       const outputChannel =
         vscode.window.createOutputChannel("Deepseek Response");
-      outputChannel.clear();
       outputChannel.show(true);
+      outputChannel.clear();
       outputChannel.appendLine(`Prompted with: \n\n${ollamaPrompt}\n`);
 
       try {
+        const version = "14B";
         const response = await axios.post(
           "http://localhost:11434/api/generate",
           {
-            model: "deepseek-r1:1.5B",
+            model: "deepseek-r1:" + version,
             prompt: ollamaPrompt,
             stream: false,
           }
